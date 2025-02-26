@@ -5,11 +5,11 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
 
-class HomeController extends AbstractController
+class TaskController extends AbstractController
 {
-    #[Route('/')]
-    public function home()
+    #[Route('/tasks', methods:'GET')]
+    public function tasks()
     {
-        return $this->render('home.html.twig');
+        return $this->render('tasks.html.twig');
     }
 }
