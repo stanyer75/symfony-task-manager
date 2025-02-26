@@ -11,8 +11,24 @@
     {% endblock %}
   </head>
   <body>
-    <h1 class="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+    <div class="max-w-lg mx-auto mt-8">
+     <form id="task-form" class="my-4 flex">
+        <input type="text" id="task-title" class="border p-2 flex-grow rounded-l" placeholder="New task..." required>
+
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r">Add</button>
+      </form>
+
+      <h2 class="text-xl font-bold mb-4">Task List</h2>
+
+      <ul id="task-list" class="bg-white shadow-md rounded-lg p-4">
+        <!-- Tasks will be listed here -->
+      </ul>
+
+      <div class="mt-4 flex justify-between">
+        <button id="prev-page" class="bg-gray-300 px-4 py-2 rounded">Previous</button>
+
+        <button id="next-page" class="bg-gray-300 px-4 py-2 rounded">Next</button>
+      </div>
+    </div>
   </body>
 </html>
