@@ -12,7 +12,7 @@
   </head>
   <body>
     <div class="max-w-lg mx-auto mt-8">
-     <form id="task-form" class="my-4 flex" action="tasks" method="post">
+     <form id="task-form" class="my-4 flex" action="/tasks" method="post">
         <input type="text" id="task-title" name="title" class="border p-2 flex-grow rounded-l" placeholder="New task..." required>
 
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r">Add</button>
@@ -21,10 +21,21 @@
       <h2 class="text-xl font-bold mb-4">Task List</h2>
       
       <ul id="task-list" class="bg-white shadow-md rounded-lg p-4">
-        {% for task in tasks %}
-          <li>{{ task.title }}</li>
-        {% endfor %}
+          {% for task in tasks %}
+              <li id="task-{{ task.id }}" class="flex justify-between items-center p-2 border-b">
+                  <span class="{% if task.isDone %}line-through text-gray-500{% endif %}">
+                      {{ task.title }}
+                  </span>
+
+                  {% if not task.isDone %}
+                      <button class="mark-done bg-green-500 text-white px-3 py-1 rounded" data-id="{{ task.id }}">
+                          Mark as Done
+                      </button>
+                  {% endif %}
+              </li>
+          {% endfor %}
       </ul>
+
 
       <div class="mt-4 flex justify-between">
         <button id="prev-page" class="bg-gray-300 px-4 py-2 rounded">Previous</button>
@@ -33,4 +44,36 @@
       </div>
     </div>
   </body>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".mark-done").forEach((button) => {
+          button.addEventListener("click", function () {
+              const taskId = this.dataset.id;
+
+              fetch(`/tasks/${taskId}/toggle`, {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                      "X-Requested-With": "XMLHttpRequest",
+                  },
+                  body: JSON.stringify({}),
+              })
+                  .then((response) => response.json())
+                  .then((data) => {
+                      if (data.success) {
+                          const taskElement = document.getElementById(`task-${taskId}`);
+                          if (taskElement) {
+                              taskElement.querySelector("span").classList.add("line-through", "text-gray-500");
+                              taskElement.querySelector(".mark-done").remove();
+                          }
+                      } else {
+                          alert("Failed to update task.");
+                      }
+                  })
+                  .catch((error) => console.error("Error:", error));
+          });
+      });
+  });
+  </script>
 </html>
