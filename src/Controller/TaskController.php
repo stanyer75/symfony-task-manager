@@ -15,7 +15,7 @@ class TaskController extends AbstractController
     #[Route('/tasks', methods:'GET')]
     public function show(EntityManagerInterface $entityManager): Response
     {
-        $tasks = $entityManager->getRepository(Task::class)->findAll();
+        $tasks = $entityManager->getRepository(Task::class)->findActiveTasks();
 
         return $this->render('tasks.html.twig', ['tasks' => $tasks]);
     }
@@ -33,13 +33,24 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/toggle', methods: ['POST'])]
-        public function markAsDone(int $id, EntityManagerInterface $entityManager): JsonResponse
-        {
-            $task = $entityManager->getRepository(Task::class)->find($id);
+    public function markAsDone(int $id, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $task = $entityManager->getRepository(Task::class)->find($id);
 
-            $task->setIsDone(true);
-            $entityManager->flush();
+        $task->setIsDone(true);
+        $entityManager->flush();
 
-            return $this->json(['success' => true]);
-        }
+        return $this->json(['success' => true]);
+    }
+
+    #[Route('/tasks/{id}/delete', methods: ['GET'])]
+    public function delete(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $task = $entityManager->getRepository(Task::class)->find($id);
+
+        $task->setDeletedAt();
+        $entityManager->flush();
+
+        return $this->redirect('/tasks');
+    }
 }

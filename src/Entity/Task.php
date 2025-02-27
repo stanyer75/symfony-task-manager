@@ -80,10 +80,9 @@ class Task
         return $this->deleted_at;
     }
 
-    public function setDeletedAt(?\DateTimeInterface $deleted_at): static
+    public function setDeletedAt()
     {
-        $this->deleted_at = $deleted_at;
-        return $this;
+        $this->deleted_at = new \DateTime();
     }
 
     #[ORM\PrePersist]

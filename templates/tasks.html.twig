@@ -23,18 +23,27 @@
       <ul id="task-list" class="bg-white shadow-md rounded-lg p-4">
           {% for task in tasks %}
               <li id="task-{{ task.id }}" class="flex justify-between items-center p-2 border-b">
+                  <!-- Task title -->
                   <span class="{% if task.isDone %}line-through text-gray-500{% endif %}">
                       {{ task.title }}
                   </span>
 
-                  {% if not task.isDone %}
-                      <button class="mark-done bg-green-500 text-white px-3 py-1 rounded" data-id="{{ task.id }}">
-                          Mark as Done
-                      </button>
-                  {% endif %}
+                  <!-- Buttons container -->
+                  <div class="flex gap-2">
+                      {% if not task.isDone %}
+                          <button class="mark-done bg-green-500 text-white px-3 py-1 rounded" data-id="{{ task.id }}">
+                              Mark as Done
+                          </button>
+                      {% endif %}
+
+                      <a href="tasks/{{ task.id }}/delete" class="bg-red-500 text-white px-3 py-1 rounded">
+                          Delete
+                      </a>
+                  </div>
               </li>
           {% endfor %}
       </ul>
+
 
 
       <div class="mt-4 flex justify-between">
