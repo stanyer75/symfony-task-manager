@@ -17,7 +17,7 @@ class TaskController extends AbstractController
     public function show(Request $request, TaskRepository $taskRepository): Response
     {
         $page = max(1, (int) $request->query->get('page', 1));
-        $sort = $request->query->get('sort', 'asc');
+        $sort = $request->query->get('sort', 'desc');
         $limit = 5;
     
         $tasks = $taskRepository->findPaginatedTasks($page, $limit, $sort);

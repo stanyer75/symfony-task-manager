@@ -17,7 +17,7 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    public function findPaginatedTasks(int $page, int $limit, string $sort = 'asc'): Paginator
+    public function findPaginatedTasks(int $page, int $limit, $sort): Paginator
     {
         $query = $this->createQueryBuilder('t')
             ->where('t.deleted_at IS NULL')
