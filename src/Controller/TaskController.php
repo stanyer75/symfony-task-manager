@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,12 +13,21 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TaskController extends AbstractController
 {
-    #[Route('/tasks', methods:'GET')]
-    public function show(EntityManagerInterface $entityManager): Response
+    #[Route('/tasks', methods: 'GET')]
+    public function show(Request $request, TaskRepository $taskRepository): Response
     {
-        $tasks = $entityManager->getRepository(Task::class)->findActiveTasks();
-
-        return $this->render('tasks.html.twig', ['tasks' => $tasks]);
+        $page = max(1, (int) $request->query->get('page', 1));
+        $sort = $request->query->get('sort', 'asc');
+        $limit = 5;
+    
+        $tasks = $taskRepository->findPaginatedTasks($page, $limit, $sort);
+    
+        return $this->render('tasks.html.twig', [
+            'tasks' => $tasks,
+            'currentPage' => $page,
+            'totalPages' => ceil(count($tasks) / $limit),
+            'sort' => $sort
+        ]);
     }
 
     #[Route('/tasks', methods:'POST')]

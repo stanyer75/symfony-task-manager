@@ -20,36 +20,47 @@
 
       <h2 class="text-xl font-bold mb-4">Task List</h2>
       
+      <div class="mb-4">
+          <a href="?sort=asc" class="px-4 py-2 bg-gray-200 rounded {% if sort == 'asc' %}font-bold{% endif %}">Oldest First</a>
+          <a href="?sort=desc" class="px-4 py-2 bg-gray-200 rounded {% if sort == 'desc' %}font-bold{% endif %}">Newest First</a>
+      </div>
+
       <ul id="task-list" class="bg-white shadow-md rounded-lg p-4">
-          {% for task in tasks %}
-              <li id="task-{{ task.id }}" class="flex justify-between items-center p-2 border-b">
-                  <!-- Task title -->
-                  <span class="{% if task.isDone %}line-through text-gray-500{% endif %}">
-                      {{ task.title }}
-                  </span>
-
-                  <!-- Buttons container -->
-                  <div class="flex gap-2">
-                      {% if not task.isDone %}
-                          <button class="mark-done bg-green-500 text-white px-3 py-1 rounded" data-id="{{ task.id }}">
-                              Mark as Done
-                          </button>
-                      {% endif %}
-
-                      <a href="tasks/{{ task.id }}/delete" class="bg-red-500 text-white px-3 py-1 rounded">
-                          Delete
-                      </a>
-                  </div>
-              </li>
-          {% endfor %}
+          {% if tasks|length > 0 %}
+              {% for task in tasks %}
+                  <li id="task-{{ task.id }}" class="flex justify-between items-center p-2 border-b">
+                      <span class="{% if task.isDone %}line-through text-gray-500{% endif %}">
+                          {{ task.title }}
+                      </span>
+                      <div class="flex gap-2">
+                          {% if not task.isDone %}
+                              <button class="mark-done bg-green-500 text-white px-3 py-1 rounded cursor-pointer" data-id="{{ task.id }}">
+                                  Mark as Done
+                              </button>
+                          {% endif %}
+                          <a href="tasks/{{ task.id }}/delete" class="bg-red-500 text-white px-3 py-1 rounded">
+                              Delete
+                          </a>
+                      </div>
+                  </li>
+              {% endfor %}
+          {% else %}
+              <span>No Tasks Created Yet</span>
+          {% endif %}
       </ul>
 
-
-
       <div class="mt-4 flex justify-between">
-        <button id="prev-page" class="bg-gray-300 px-4 py-2 rounded">Previous</button>
+          {% if currentPage > 1 %}
+              <a href="?page={{ currentPage - 1 }}&sort={{ sort }}" class="bg-gray-300 px-4 py-2 rounded">Previous</a>
+          {% else %}
+              <span class="bg-gray-300 px-4 py-2 rounded opacity-50">Previous</span>
+          {% endif %}
 
-        <button id="next-page" class="bg-gray-300 px-4 py-2 rounded">Next</button>
+          {% if currentPage < totalPages %}
+              <a href="?page={{ currentPage + 1 }}&sort={{ sort }}" class="bg-gray-300 px-4 py-2 rounded">Next</a>
+          {% else %}
+              <span class="bg-gray-300 px-4 py-2 rounded opacity-50">Next</span>
+          {% endif %}
       </div>
     </div>
   </body>
